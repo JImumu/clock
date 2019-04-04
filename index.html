@@ -7,7 +7,7 @@
         body{background-color: #000;}
         ul,li{list-style: none;}
         ul{position: fixed;left:0;right:0;top:0;bottom:0;margin:auto;background-color: #f40;width:0px;height:0px;}
-        li{text-align: right;/*background-color: #f30;*/transform-origin: left 50%;position: absolute;left:0;top:50%;margin-top:-50%;transition: all ease .5s;color:#999;user-select: none;}
+        li{text-align: right;/*background-color: #f30;*/transform-origin: left 50%;position: absolute;left:0;top:50%;margin-top:-50%;transition: all ease .5s;color:#666;user-select: none;}
         .s li{width:420px;}
         .m li{width:350px;}
         .h li{width:280px;}
@@ -92,7 +92,7 @@
             for (var i = 0; i < lis.length; i++) {
                 var rotate = (lis.length - i + t)
                 lis.eq(i).css('transform', 'rotate(' + rotate * 360 / lis.length + 'deg)')
-                rotate % lis.length == 0 && lis.eq(i).css('color', '#fff').siblings().css('color', '#999')
+                rotate % lis.length == 0 && lis.eq(i).css('color', '#fff').siblings().css('color', '#666')
             }
             // 归零
             if (t == lis.length - 1) {
@@ -101,7 +101,7 @@
                     for (var i = 0; i < lis.length; i++) {
                         var rotate = lis.length - i - 1
                         lis.eq(i).css('transform', 'rotate(' + rotate * 360 / lis.length + 'deg)')
-                        rotate % lis.length == 0 && lis.eq(i).css('color', '#fff').siblings().css('color', '#999')
+                        rotate % lis.length == 0 && lis.eq(i).css('color', '#fff').siblings().css('color', '#666')
                     }
                     setTimeout(function () {lis.css('transition', 'all ease .5s')}, 200)
                 }, 500)

@@ -6,8 +6,8 @@
         *{margin:0;padding:0;font-family: '微软雅黑';}
         body{background-color: #000;}
         ul,li{list-style: none;}
-        ul{position: fixed;left:0;right:0;top:0;bottom:0;margin:auto;background-color: #f40;width:0px;height:0px;transition: all ease .1s;transform: rotate(0);}
-        li{text-align: right;/*background-color: #f30;*/transform-origin: left 50%;position: absolute;left:0;top:50%;margin-top:-50%;transition: all ease .2s;color:#999;user-select: none;}
+        ul{position: fixed;left:0;right:0;top:0;bottom:0;margin:auto;background-color: #f40;width:0px;height:0px;}
+        li{text-align: right;/*background-color: #f30;*/transform-origin: left 50%;position: absolute;left:0;top:50%;margin-top:-50%;transition: all ease .5s;color:#999;user-select: none;}
         .s li{width:420px;}
         .m li{width:350px;}
         .h li{width:280px;}
@@ -77,37 +77,41 @@
               }  
                
               return chnStr;  
-        }  
+        } 
+
+        function mGetDate(year, month){
+            var d = new Date(year, month, 0);
+            return d.getDate();
+        }
     </script>
     <script type="text/javascript">
 
         function rotate(selector, t) {
             t = +t
             var lis = $(selector)
+            // if (t == 0) {
+            //     lis.css('transition', 'unset')
+            //     for (var i = 0; i < lis.length; i++) {
+            //         var rotate = (lis.length - i - 1)
+            //         lis.eq(i).css('transform', 'rotate(' + rotate * 360 / lis.length + 'deg)')
+            //         rotate % lis.length == 0 && lis.eq(i).css('color', '#fff').siblings().css('color', '#999')
+            //     }
+            //     lis.css('transition', 'all ease .5s')
+            //     return
+            // }
             for (var i = 0; i < lis.length; i++) {
                 var rotate = (lis.length - i + t)
                 lis.eq(i).css('transform', 'rotate(' + rotate * 360 / lis.length + 'deg)')
                 rotate % lis.length == 0 && lis.eq(i).css('color', '#fff').siblings().css('color', '#999')
             }
-            if (t == lis.length) {
-                t = 0
-                setTimeout(function () {
-                    lis.css('transition', 'unset')
-                    for (var i = 0; i < lis.length; i++) {
-                        var rotate = (lis.length - i + t)
-                        lis.eq(i).css('transform', 'rotate(' + rotate * 360 / lis.length + 'deg)')
-                        rotate % lis.length == 0 && lis.eq(i).css('color', '#fff').siblings().css('color', '#999')
-                    }
-                    setTimeout(function () {lis.css('transition', 'all ease .2s')})
-                }, 300)
-            }
-            
         }
 
         function init (selector, num, label, len) {
             num = +num
             for (var i = 0; i < len; i++) {
                 showNum = label === '午' ? (i == 0 ? '上' : '下') : NumberToChinese(i)
+                showNum = label == '月' && i == 0 ? NumberToChinese(len) : showNum
+                showNum = label == '号' && i == 0 ? NumberToChinese(len) : showNum
                 var rotate = len - i + num
                 if (rotate % len == 0) {
                     $(selector).append('<li style="color:#fff;transform: rotate(' + rotate * 360 / len + 'deg);">' + showNum + label + '</li>')
@@ -129,12 +133,13 @@
             var y = str.split(' ')[0].split('/')[0]
             return {s: s, m: m, h: h, d: d, M: M, sx: sx, y: y}
         }
+
         var now = getNow()
         init('.s', now.s, '秒', 60)
         init('.m', now.m, '分', 60)
         init('.h', now.h, '点', 24)
         init('.sx', now.sx, '午', 2)
-        init('.d', now.d, '号', 30)
+        init('.d', now.d, '号', 31)
         init('.M', now.M, '月', 12)
 
         setInterval(function () {
@@ -146,9 +151,7 @@
             rotate('.d li', now.d)
             rotate('.M li', now.M)
             $('.Y li').text(now.y + '年')
-        }, 1000)
-
-
+        }, 10000)
     </script>
 </body>
 </html>

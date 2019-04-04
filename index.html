@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        *{margin:0;padding:0;font-family: '微软雅黑';}
+        body{background-color: #000;}
+        ul,li{list-style: none;}
+        ul{position: fixed;left:0;right:0;top:0;bottom:0;margin:auto;background-color: #f40;width:0px;height:0px;transition: all ease .1s;transform: rotate(0);}
+        li{text-align: right;/*background-color: #f30;*/transform-origin: left 50%;position: absolute;left:0;top:50%;margin-top:-50%;transition: all ease .2s;color:#999;user-select: none;}
+        .s li{width:420px;}
+        .m li{width:350px;}
+        .h li{width:280px;}
+        .sx li{width:210px;}
+        .d li{width:170px;}
+        .M li{width:100px;}
+        .Y li{left:0%;transform:translate(-50%);word-break: keep-all;color:#fff;}
+    </style>
+</head>
+<body>
+    <ul class="Y"><li>2019年</li></ul>
+    <ul class="s"></ul>
+    <ul class="m"></ul>
+    <ul class="h"></ul>
+    <ul class="sx"></ul>
+    <ul class="d"></ul>
+    <ul class="M"></ul>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        var chnNumChar = ["零","一","二","三","四","五","六","七","八","九"];
+        var chnUnitSection = ["","万","亿","万亿","亿亿"];
+        var chnUnitChar = ["","十","百","千"];
+
+        function SectionToChinese(section){
+            var strIns = '', chnStr = '';
+            var unitPos = 0;
+            var zero = true;
+            while(section > 0){
+                var v = section % 10;
+                if(v === 0){
+                    if(!zero){
+                        zero = true;
+                        chnStr = chnNumChar[v] + chnStr;
+                    }
+                }else{
+                    zero = false;
+                    strIns = chnNumChar[v];
+                    strIns += chnUnitChar[unitPos];
+                    chnStr = strIns + chnStr;
+                }
+                unitPos++;
+                section = Math.floor(section / 10);
+            }
+            return chnStr;
+        }
+
+        function NumberToChinese(num){  
+              var unitPos = 0;  
+              var strIns = '', chnStr = '';  
+              var needZero = false;  
+               
+              if(num === 0){  
+                return chnNumChar[0];  
+              }  
+               
+              while(num > 0){  
+                var section = num % 10000;  
+                if(needZero){  
+                  chnStr = chnNumChar[0] + chnStr;  
+                }  
+                strIns = SectionToChinese(section);  
+                strIns += (section !== 0) ? chnUnitSection[unitPos] : chnUnitSection[0];  
+                chnStr = strIns + chnStr;  
+                needZero = (section < 1000) && (section > 0);  
+                num = Math.floor(num / 10000);  
+                unitPos++;  
+              }  
+               
+              return chnStr;  
+        }  
+    </script>
+    <script type="text/javascript">
+
+        function rotate(selector, t) {
+            t = +t
+            var lis = $(selector)
+            for (var i = 0; i < lis.length; i++) {
+                var rotate = (lis.length - i + t)
+                lis.eq(i).css('transform', 'rotate(' + rotate * 360 / lis.length + 'deg)')
+                rotate % lis.length == 0 && lis.eq(i).css('color', '#fff').siblings().css('color', '#999')
+            }
+            if (t == lis.length) {
+                t = 0
+                setTimeout(function () {
+                    lis.css('transition', 'unset')
+                    for (var i = 0; i < lis.length; i++) {
+                        var rotate = (lis.length - i + t)
+                        lis.eq(i).css('transform', 'rotate(' + rotate * 360 / lis.length + 'deg)')
+                        rotate % lis.length == 0 && lis.eq(i).css('color', '#fff').siblings().css('color', '#999')
+                    }
+                    setTimeout(function () {lis.css('transition', 'all ease .2s')})
+                }, 300)
+            }
+            
+        }
+
+        function init (selector, num, label, len) {
+            num = +num
+            for (var i = 0; i < len; i++) {
+                showNum = label === '午' ? (i == 0 ? '上' : '下') : NumberToChinese(i)
+                var rotate = len - i + num
+                if (rotate % len == 0) {
+                    $(selector).append('<li style="color:#fff;transform: rotate(' + rotate * 360 / len + 'deg);">' + showNum + label + '</li>')
+                } else {
+                    $(selector).append('<li style="transform: rotate(' + rotate * 360 / len + 'deg);">' + showNum + label + '</li>')
+                }
+            }
+        }
+
+        function getNow () {
+            var date = new Date()
+            var str = date.toLocaleString()
+            var s = str.split(':')[2]
+            var m = str.split(':')[1]
+            var h = str.split(':')[0].split('午')[1]
+            var d = str.split(' ')[0].split('/')[2]
+            var M = str.split(' ')[0].split('/')[1]
+            var sx = str.split(' ')[1].split('午')[0] === '上' ? 0 : 1
+            var y = str.split(' ')[0].split('/')[0]
+            return {s: s, m: m, h: h, d: d, M: M, sx: sx, y: y}
+        }
+        var now = getNow()
+        init('.s', now.s, '秒', 60)
+        init('.m', now.m, '分', 60)
+        init('.h', now.h, '点', 24)
+        init('.sx', now.sx, '午', 2)
+        init('.d', now.d, '号', 30)
+        init('.M', now.M, '月', 12)
+
+        setInterval(function () {
+            var now = getNow()
+            console.log(now.s)
+            rotate('.s li', now.s)
+            rotate('.m li', now.m)
+            rotate('.h li', now.h)
+            rotate('.sx li', now.sx)
+            rotate('.d li', now.d)
+            rotate('.M li', now.M)
+            $('.Y li').text(now.y + '年')
+        }, 50)
+
+
+    </script>
+</body>
+</html>

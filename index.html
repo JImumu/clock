@@ -94,6 +94,7 @@
                 lis.eq(i).css('transform', 'rotate(' + rotate * 360 / lis.length + 'deg)')
                 rotate % lis.length == 0 && lis.eq(i).css('color', '#fff').siblings().css('color', '#999')
             }
+            // 归零
             if (t == lis.length - 1) {
                 setTimeout(function () {
                     lis.css('transition', 'unset')
@@ -113,6 +114,7 @@
                 showNum = label === '午' ? (i == 0 ? '上' : '下') : NumberToChinese(i)
                 showNum = label == '月' && i == 0 ? NumberToChinese(len) : showNum
                 showNum = label == '号' && i == 0 ? NumberToChinese(len) : showNum
+                showNum = label == '点' && i == 0 ? NumberToChinese(len) : showNum
                 var rotate = num == len - 1 ? len - i - 1 : len - i + num
                 if (rotate % len == 0) {
                     $(selector).append('<li style="color:#fff;transform: rotate(' + rotate * 360 / len + 'deg);">' + showNum + label + '</li>')
@@ -132,15 +134,19 @@
             var M = str.split(' ')[0].split('/')[1]
             var sx = str.split(' ')[1].split('午')[0] === '上' ? 0 : 1
             var y = str.split(' ')[0].split('/')[0]
+            // 归零
+            d = d ==  mGetDate(y, M) ? 0 : d
+            M = M == '12' ? 0 : M
+            h = h == '12' ? 0 : h
             return {s: s, m: m, h: h, d: d, M: M, sx: sx, y: y}
         }
 
         var start = getNow()
         init('.s', start.s, '秒', 60)
         init('.m', start.m, '分', 60)
-        init('.h', start.h, '点', 24)
+        init('.h', start.h, '点', 12)
         init('.sx', start.sx, '午', 2)
-        init('.d', start.d, '号', 31)
+        init('.d', start.d, '号', mGetDate(start.y, start.M))
         init('.M', start.M, '月', 12)
 
         setInterval(function () {
@@ -153,6 +159,10 @@
                 rotate('.m li', now.m)
                 start.m = now.m
             }
+            if (start.h != now.h) {
+                rotate('.h li', now.h)
+                start.h = now.h
+            }
             if (start.sx != now.sx) {
                 rotate('.sx li', now.sx)
                 start.sx = now.sx
@@ -162,6 +172,11 @@
                 start.d = now.d
             }
             if (start.M != now.M) {
+                // 月份变更时更新日期
+                setTimeout(function () {
+                    $('.d li').remove()
+                    init('.d', now.d, '号', mGetDate(now.y, now.M))
+                }, 500)
                 rotate('.M li', now.M)
                 start.M = now.M
             }

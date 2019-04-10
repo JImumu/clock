@@ -18,6 +18,7 @@
     </style>
 </head>
 <body>
+    <div style="display: none;"><script type="text/javascript" src="https://s5.cnzz.com/z_stat.php?id=1276886485&web_id=1276886485"></script></div>
     <ul class="Y"><li>2019年</li></ul>
     <ul class="s"></ul>
     <ul class="m"></ul>
@@ -127,13 +128,14 @@
         function getNow () {
             var date = new Date()
             var str = date.toLocaleString()
-            var s = str.split(':')[2]
-            var m = str.split(':')[1]
-            var h = str.split(':')[0].split('午')[1]
-            var d = str.split(' ')[0].split('/')[2]
-            var M = str.split(' ')[0].split('/')[1]
-            var sx = str.split(' ')[1].split('午')[0] === '上' ? 0 : 1
-            var y = str.split(' ')[0].split('/')[0]
+            var s = date.getSeconds()
+            var m = date.getMinutes()
+            var h = date.getHours()
+            h = h > 12 ? h - 12 : h
+            var d = date.getDate()
+            var M = date.getMonth() + 1
+            var sx = h < 12 ? 1 : 0
+            var y = date.getFullYear()
             // 归零
             d = d ==  mGetDate(y, M) ? 0 : d
             M = M == '12' ? 0 : M

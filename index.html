@@ -112,7 +112,7 @@
         function init (selector, num, label, len) {
             num = +num
             for (var i = 0; i < len; i++) {
-                showNum = label === '午' ? (i == 0 ? '上' : '下') : NumberToChinese(i)
+                showNum = label === '午' ? (i == 1 ? '上' : '下') : NumberToChinese(i)
                 showNum = label == '月' && i == 0 ? NumberToChinese(len) : showNum
                 showNum = label == '号' && i == 0 ? NumberToChinese(len) : showNum
                 showNum = label == '点' && i == 0 ? NumberToChinese(len) : showNum
@@ -131,10 +131,10 @@
             var s = date.getSeconds()
             var m = date.getMinutes()
             var h = date.getHours()
+            var sx = h < 12 ? 1 : 0
             h = h > 12 ? h - 12 : h
             var d = date.getDate()
             var M = date.getMonth() + 1
-            var sx = h < 12 ? 1 : 0
             var y = date.getFullYear()
             // 归零
             d = d ==  mGetDate(y, M) ? 0 : d

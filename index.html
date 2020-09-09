@@ -144,6 +144,7 @@
         }
 
         var start = getNow()
+        $('.Y li').text(start.y + '年')
         init('.s', start.s, '秒', 60)
         init('.m', start.m, '分', 60)
         init('.h', start.h, '点', 12)
@@ -182,6 +183,7 @@
                 rotate('.M li', now.M)
                 start.M = now.M
             }
+            console.log(start.y)
             if (start.y != now.y) {
                 $('.Y li').text(now.y + '年')
                 start.y = now.y
